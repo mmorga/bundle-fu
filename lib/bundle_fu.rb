@@ -12,7 +12,9 @@ class BundleFu
         output << "/* --------- #{filename} --------- */ "
         output << "\n"
         begin
-          content = (File.read(File.join(RAILS_ROOT, "public", filename)))
+          public_dir = defined?(Rails.public_path) ? Rails.public_path : "public"
+	  file_name = File.join(public_dir, filename.sub(/^#{ActionController::Base.relative_url_root}/, ''))
+          content = (File.read(file_name))
         rescue 
           output << "/* FILE READ ERROR! */"
           next
