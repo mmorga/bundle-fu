@@ -124,7 +124,13 @@ class BundleFu
         end
         
         if File.exists?(abs_path) && options[:bundle_fu]
-          tag = filetype==:css ? stylesheet_link_tag(output_filename) : javascript_include_tag(output_filename)
+          tag_options = options.inject({}) {|hash, pair| 
+            if [:charset, :hreflang, :media, :rel, :rev, :target, :type, :class, :dir, :id, :lang, :style, :title].include?(pair.first)
+              hash[pair.first] = pair.last
+            end
+            hash
+          }
+          tag = filetype==:css ? stylesheet_link_tag(output_filename, tag_options) : javascript_include_tag(output_filename)
           if Rails::version < "2.2.0"
             concat( tag , block.binding)
           else
